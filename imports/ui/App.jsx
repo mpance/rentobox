@@ -8,9 +8,27 @@ import InputForm from './InputForm.jsx'
  
 // App component - represents the whole app
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      hideCompleted: false,
+    };
+  }
+
+  toggleHideCompleted() {
+    this.setState({
+      hideCompleted: !this.state.hideCompleted,
+    })
+  }
+
   renderListings() {
-    console.log(this.props.listings);
-    return this.props.listings.map((listing) => (
+    let filteredListings = this.props.listings;
+    if(this.state.hideCompleted) {
+      filteredListings = filteredListings.filter(listing => !listing.checked);
+    }
+
+    return filteredListings.map((listing) => (
       <Listing key={listing._id} listing={listing} />
     ));
   }
@@ -20,12 +38,21 @@ class App extends Component {
       <section>
         <div className="column">
           <header>
-            <h1>Listings</h1>
+            <h1>Listings: {this.props.incompleteCount}</h1>
+            <label className="hide-completed">
+              <input 
+                type="checkbox"
+                readOnly
+                checked={this.state.hideCompleted}
+                onClick={this.toggleHideCompleted.bind(this)}
+              />
+              Hide selected listings
+            </label>
           </header>
    
-          <ul>
+          <div id="listingList">
             {this.renderListings()}
-          </ul>
+          </div>
         </div>
         <div className="column">
           <InputForm />
@@ -42,5 +69,6 @@ App.propTypes = {
 export default createContainer(() => {
   return {
     listings: Listings.find({}, { sort: { createdAt: -1 } }).fetch(),
+    incompleteCount: Listings.find({ checked: { $ne: true } }).count(),
   };
 }, App);
