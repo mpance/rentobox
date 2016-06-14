@@ -1,10 +1,12 @@
 import React, { Component, PropTypes } from 'react';
+import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
  
 import { Listings } from '../api/listings.js';
 
 import Listing from './Listing.jsx'
 import InputForm from './InputForm.jsx'
+import AccountsUIWrapper from './AccountsUIWrapper.jsx';
  
 // App component - represents the whole app
 class App extends Component {
@@ -23,6 +25,7 @@ class App extends Component {
   }
 
   renderListings() {
+    console.log(this.props.listings);
     let filteredListings = this.props.listings;
     if(this.state.hideCompleted) {
       filteredListings = filteredListings.filter(listing => !listing.checked);
@@ -48,6 +51,9 @@ class App extends Component {
               />
               Hide selected listings
             </label>
+
+            <div><AccountsUIWrapper /></div>
+
           </header>
    
           <div id="listingList">
@@ -55,7 +61,9 @@ class App extends Component {
           </div>
         </div>
         <div className="column">
-          <InputForm />
+          { this.props.currentUser ?
+            <InputForm /> : ''
+          }
         </div>
       </section>
     );
@@ -64,11 +72,14 @@ class App extends Component {
 
 App.propTypes = {
   listings: PropTypes.array.isRequired,
+  incompleteCount: PropTypes.number.isRequired,
+  currentUser: PropTypes.object,
 };
 
 export default createContainer(() => {
   return {
     listings: Listings.find({}, { sort: { createdAt: -1 } }).fetch(),
     incompleteCount: Listings.find({ checked: { $ne: true } }).count(),
+    currentUser: Meteor.user(),
   };
 }, App);

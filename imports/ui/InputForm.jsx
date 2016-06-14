@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import { Meteor } from 'meteor/meteor';
 
 import { Listings } from '../api/listings.js'
 
@@ -18,13 +19,7 @@ export default class InputForm extends Component {
 		event.preventDefault();
 		console.log(event);
 
-		Listings.insert({
-			fromLoc: this.state.fromLoc,
-			toLoc: this.state.toLoc,
-			fromDate: this.state.fromDate,
-			toDate: this.state.toDate,
-			createdAt: new Date()
-		});
+		Meteor.call('listings.insert', this.state.fromLoc, this.state.toLoc, this.state.fromDate, this.state.toDate);
 
 		this.setState({ fromLoc: '' });
 		this.setState({ toLoc: '' });

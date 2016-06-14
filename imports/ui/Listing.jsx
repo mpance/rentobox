@@ -7,19 +7,17 @@ import { Listings } from '../api/listings.js'
 export default class Listing extends Component {
 
 	toggleChecked() {
-		Listings.update(this.props.listing._id, {
-			$set: { checked: !this.props.listing.checked },
-		});
+		Meteor.call('listings.toggleChecked', this.props.listing._id, this.props.listing.checked);
 	}
 
 	deleteThisListing() {
-		console.log(this.props.listing);
-		Listings.remove(this.props.listing._id);
+		Meteor.call('listings.remove', this.props.listing._id);
 	}
 
   render() {
     return (
       <div className="listingItem">
+      	<div>User: {this.props.listing.username}</div>
       	<div>From: {this.props.listing.fromLoc}</div>
         <div>To: {this.props.listing.toLoc}</div>
         <div>From: {this.props.listing.fromDate}</div>
