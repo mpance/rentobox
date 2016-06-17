@@ -25,7 +25,7 @@ class App extends Component {
   }
 
   renderListings() {
-    console.log(this.props.listings);
+
     let filteredListings = this.props.listings;
     if(this.state.hideCompleted) {
       filteredListings = filteredListings.filter(listing => !listing.checked);
@@ -34,6 +34,24 @@ class App extends Component {
     return filteredListings.map((listing) => (
       <Listing key={listing._id} listing={listing} />
     ));
+  }
+
+  renderMatches() {
+    let listings = this.props.listings;
+    let matches = this.props.listings.filter(listing => listing.username === this.props.currentUser.username && listing.match);
+
+    let foundMatches = matches.map(function(match) {
+
+      return listings.find(function(currListing){
+        return currListing._id === match.match;
+      });
+
+    })
+
+    return foundMatches.map((match) => (
+      <Listing key={match._id} listing={match} />
+    ));
+
   }
  
   render() {
@@ -61,9 +79,14 @@ class App extends Component {
           </div>
         </div>
         <div className="column">
-          { this.props.currentUser ?
-            <InputForm /> : ''
-          }
+          <div>
+            { this.props.currentUser ? <InputForm /> : '' }
+          </div>
+          <div id="matchList">
+            <div>
+              { this.renderMatches() }        
+            </div>
+          </div>
         </div>
       </section>
     );
@@ -77,6 +100,8 @@ App.propTypes = {
 };
 
 export default createContainer(() => {
+  Meteor.subscribe('listings');
+
   return {
     listings: Listings.find({}, { sort: { createdAt: -1 } }).fetch(),
     incompleteCount: Listings.find({ checked: { $ne: true } }).count(),

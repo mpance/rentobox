@@ -17,7 +17,6 @@ export default class InputForm extends Component {
 
 	handleSubmit(event) {
 		event.preventDefault();
-		console.log(event);
 
 		Meteor.call('listings.insert', this.state.fromLoc, this.state.toLoc, this.state.fromDate, this.state.toDate);
 
@@ -29,7 +28,7 @@ export default class InputForm extends Component {
 	}
 
 	handleChange(event) {
-		console.log(event.target.id);
+
 		if(event.target.id === 'fromLocInput') {
 			this.setState({ fromLoc: event.target.value})
 		} else if (event.target.id === 'toLocInput') {

@@ -1,8 +1,15 @@
 import { Mongo } from 'meteor/mongo';
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
+import match from '../match.js'
  
 export const Listings = new Mongo.Collection('listings');
+
+if(Meteor.isServer) {
+	Meteor.publish('listings', function listingsPublication() {
+		return Listings.find();
+	})
+}
 
 Meteor.methods({
 	'listings.insert'(fromLoc, toLoc, fromDate, toDate) {
@@ -24,6 +31,8 @@ Meteor.methods({
 			username: Meteor.user().username,
 			createdAt: new Date()
 		});
+
+		match();
 	},
 
 	'listings.remove'(listingId) {

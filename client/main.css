@@ -1,19 +1,22 @@
-/* CSS declarations go here */
+html {
+	font-family: sans-serif;
+}
 
 section {
 	margin: 0 auto;
 	display: flex;
-	border: 1px solid black;
 }
 
 .column {
-	border: 1px solid black;
+	background: mediumseagreen;
+	border: 5px solid seagreen;
 	flex: 1 1 0;
+	padding: 10px;
 	margin: 10px;
 }
 
 .listingItem {
 	margin: 10px;
 	padding: 4px;
-	border: 1px solid black;
+	border: 3px solid white;
 }
